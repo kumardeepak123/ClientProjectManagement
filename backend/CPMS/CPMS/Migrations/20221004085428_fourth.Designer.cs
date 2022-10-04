@@ -4,14 +4,16 @@ using CPMS.DBConnect;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CPMS.Migrations
 {
     [DbContext(typeof(CPMDbContext))]
-    partial class CPMDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221004085428_fourth")]
+    partial class fourth
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,9 +55,6 @@ namespace CPMS.Migrations
                         .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
-
-                    b.Property<byte[]>("ProfilePicture")
-                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Role")
                         .IsRequired()

@@ -1,4 +1,5 @@
 using CPMS.DBConnect;
+using CPMS.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,7 @@ namespace CPMS
             });
 
             services.AddDbContext<CPMDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("CPMConnection")));
+            services.AddScoped<IClientRepo, ClientRepo>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

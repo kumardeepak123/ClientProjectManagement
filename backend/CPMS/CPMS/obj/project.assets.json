@@ -5937,23 +5937,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\1000074028\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\deepa\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\1000074028\\Desktop\\ClientProjectManagement\\backend\\CPMS\\CPMS\\CPMS.csproj",
+      "projectUniqueName": "C:\\Users\\deepa\\OneDrive\\Desktop\\ClientProjectManagement\\backend\\CPMS\\CPMS\\CPMS.csproj",
       "projectName": "CPMS",
-      "projectPath": "C:\\Users\\1000074028\\Desktop\\ClientProjectManagement\\backend\\CPMS\\CPMS\\CPMS.csproj",
-      "packagesPath": "C:\\Users\\1000074028\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\1000074028\\Desktop\\ClientProjectManagement\\backend\\CPMS\\CPMS\\obj\\",
+      "projectPath": "C:\\Users\\deepa\\OneDrive\\Desktop\\ClientProjectManagement\\backend\\CPMS\\CPMS\\CPMS.csproj",
+      "packagesPath": "C:\\Users\\deepa\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\deepa\\OneDrive\\Desktop\\ClientProjectManagement\\backend\\CPMS\\CPMS\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\1000074028\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\deepa\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -6016,7 +6012,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.404\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.412\\RuntimeIdentifierGraph.json"
       }
     }
   }

@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 namespace CPMS.Models
 {
     public class Client
-    {
+    {   
         [Key]
         public int Id { get; set; }
 
@@ -22,20 +22,20 @@ namespace CPMS.Models
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Required]
-        [DataType(DataType.PhoneNumber)]
-        public int Phone { get; set; }
+        [Required, MaxLength(10)]
+        public string Phone { get; set; }
 
         [Required, MaxLength(30)]
         
         public string Organization { get; set; }
 
-        [Required]
+         
         public byte[] AgreementPaper { get; set; }
+        public byte[] ProfilePicture { get; set; }
 
         [Required, MaxLength(10)]
         public string Role { get; set; }
 
-        public List<Project> Projects { get; set; }
+        public List<Project> Projects { get; set; } 
     }
 }

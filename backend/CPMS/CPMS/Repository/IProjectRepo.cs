@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CPMS.Repository
 {
-    interface IProjectRepo
+    public interface IProjectRepo
     {
     }
 }
