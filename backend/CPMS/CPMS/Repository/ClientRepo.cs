@@ -18,48 +18,74 @@ namespace CPMS.Repository
         }
         public async Task<bool> AddClient(Client client)
         {
-           cPMDbContext.Clients.Add(new Client {
-               
-               Name = client.Name,
-               Email = client.Email,
-               Password = client.Password,
-               Phone = client.Phone,
-               Organization = client.Organization,
-               Role = client.Role,
-               Projects = client.Projects,
-               AgreementPaper = client.AgreementPaper,
-               ProfilePicture = client.ProfilePicture
-           });
+            cPMDbContext.Clients.Add(new Client
+            {
+
+                Name = client.Name,
+                Email = client.Email,
+                Password = client.Password,
+                Phone = client.Phone,
+                Organization = client.Organization,
+                Role = client.Role,
+                Projects = client.Projects,
+                AgreementPaperName =client.AgreementPaperName,
+                ProfileImageName =client.ProfileImageName
+            });
 
             try
             {
                 await cPMDbContext.SaveChangesAsync();
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
-                Console.WriteLine(ex.Message+"?????????????????????????????????????????????????");
+                Console.WriteLine(ex.Message);
                 return false;
             }
             return true;
         }
 
-        public async Task<IActionResult> DownloadAgreementPaper(int id)
+        public async Task<List<Client>> getAllClients()
         {
-            var client =  await cPMDbContext.Clients.Where(x => x.Id == id).FirstOrDefaultAsync();
-            byte[] AgreeMent = client.AgreementPaper;
-
-            string mimeType = "application/pdf";
-
-            return new FileContentResult(AgreeMent, mimeType)
-            {
-                FileDownloadName = $"AgreementPaper_{client.Name}.pdf"
-            };
-            
+           return await cPMDbContext.Clients.ToListAsync();
         }
 
         public async Task<Client> getClientById(int id)
         {
-            var client =  cPMDbContext.Clients.Where(x => x.Id == id).FirstOrDefaultAsync();
-            return  await  client;
+            var client = await cPMDbContext.Clients.Where(x => x.Id == id)
+                               .FirstOrDefaultAsync();
+            return  client;   
+        }
+
+        public async Task<bool> UpdateClient(int id, Client client)
+        {
+            var dbClient = await cPMDbContext.Clients.Where(x => x.Id == id).FirstOrDefaultAsync();
+            if(dbClient == null)
+            {
+                return false;
+            }
+
+            dbClient.Name = client.Name;
+            dbClient.Email = client.Email;
+            dbClient.Password = client.Password;
+            dbClient.Phone = client.Phone;
+            dbClient.Organization = client.Organization;
+            dbClient.ProfileImageName = client.ProfileImageName;
+            dbClient.AgreementPaperName = client.AgreementPaperName;
+            dbClient.Role = client.Role;
+
+
+
+            try
+            {
+                
+                await cPMDbContext.SaveChangesAsync();
+            }catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+
+            return true;
         }
     }
 }

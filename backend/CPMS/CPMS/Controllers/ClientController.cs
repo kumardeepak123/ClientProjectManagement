@@ -1,6 +1,6 @@
-﻿using CPMS.Dtos;
-using CPMS.Models;
+﻿using CPMS.Models;
 using CPMS.Repository;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,80 +16,118 @@ namespace CPMS.Controllers
     public class ClientController : ControllerBase
     {
         private readonly IClientRepo _IClientRepo;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public ClientController(IClientRepo iClientRepo)
+        public ClientController(IClientRepo iClientRepo, IWebHostEnvironment hostEnvironment)
         {
             _IClientRepo = iClientRepo;
+            this._hostEnvironment = hostEnvironment;
         }
 
-        //create
+        
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateClient([FromForm] ClientDto  clientDto)
+        public async Task<IActionResult> CreateClient([FromForm] Client client)
         {
-            //string extn = clientDto.AgreementPaper.FileName;
-            Client client = new Client
+            string FileExtension = Path.GetExtension(client.AgreementPaperFile.FileName);
+            if(FileExtension != ".pdf")
             {
-                Id = clientDto.Id,
-                Name = clientDto.Name,
-                Email = clientDto.Email,
-                Password = clientDto.Password,
-                Phone = clientDto.Phone,
-                Organization = clientDto.Organization,
-                Role = clientDto.Role,
-                Projects = new List<Project>()
-            };
-            //return Ok(client);
-            using (var target = new MemoryStream())
+                return BadRequest(new { message = "Please select pdf files" });
+            }
+            client.ProfileImageName = await SaveFile(client.ProfileImageFile);
+            client.AgreementPaperName = await SaveFile(client.AgreementPaperFile);
+
+            var res = await _IClientRepo.AddClient(client);
+            if (res)
             {
-                if (!clientDto.AgreementPaper.FileName.Contains(".pdf"))
-                {
-                    return Ok(new { success = false, message = "Please select pdf files" });
-                }
-                clientDto.AgreementPaper.CopyTo(target);
-                client.AgreementPaper = target.ToArray();
+                return Ok(new { message = "Client created successfully" });
             }
 
-             using(var t = new MemoryStream())
-            {
-                clientDto.ProfilePicture.CopyTo(t);
-                client.ProfilePicture = t.ToArray();
-            }
-
-            var success = await _IClientRepo.AddClient(client);
-
-            if (success == false)
-            {
-                return StatusCode(502);
-            }
-
-            return Ok(new
-            {
-                success = true,
-                message = "Client registered successfully"
-            });
+            return StatusCode(501);
         }
-        //get
-
+        
         [HttpGet]
         [Route("details/{id}")]
-        public  async Task<IActionResult > GetClientById(int id)
+        public async Task<IActionResult> GetClientById(int id)
         {
-            var client =  await _IClientRepo.getClientById(id);
- 
+            var client = await _IClientRepo.getClientById(id);
+            if(client == null)
+            {
+                return NotFound(new { message="User not found with id "+id});
+            }
+            client.ProfileImageSrc = String.Format("{0}://{1}{2}/UploadFiles/{3}", Request.Scheme, Request.Host, Request.PathBase, client.ProfileImageName);
+            client.AgreementPaperSrc = String.Format("{0}://{1}{2}/UploadFiles/{3}", Request.Scheme, Request.Host, Request.PathBase, client.AgreementPaperName);
             return Ok(client);
-           
+
         }
 
-        [HttpGet("agreementpaper/download/{id}")]
-        public async Task<IActionResult> DownloadAgreement(int id)
+        [HttpGet("all")]
+        public  async Task<ActionResult<List<Client>>> GetAllClients()
         {
-            var res = await _IClientRepo.DownloadAgreementPaper(id);
+            var clients = await _IClientRepo.getAllClients();
+
+            var res = clients.Where(x=> x.Role == "Client").Select(client => new Client
+            {   Id = client.Id,
+                Name =client.Name,
+                Email = client.Email,
+                Phone = client.Phone,
+                Organization = client.Organization,
+                ProfileImageSrc = String.Format("{0}://{1}{2}/UploadFiles/{3}", Request.Scheme, Request.Host, Request.PathBase, client.ProfileImageName),
+                AgreementPaperSrc = String.Format("{0}://{1}{2}/UploadFiles/{3}", Request.Scheme, Request.Host, Request.PathBase, client.AgreementPaperName)
+            }).ToList();
 
             return Ok(res);
         }
-        //update
-        //delete
+
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdateClient(int id,[FromForm] Client client)
+        {
+            if (client.ProfileImageFile != null)
+            {
+                DeleteFile(client.ProfileImageName);
+                client.ProfileImageName = await SaveFile(client.ProfileImageFile);
+            }
+
+            if (client.AgreementPaperFile != null)
+            {
+                DeleteFile(client.AgreementPaperName);
+                client.AgreementPaperName = await SaveFile(client.AgreementPaperFile);
+            }
+            var res =  await _IClientRepo.UpdateClient(id, client);
+            if (!res)
+            {
+                return Ok(new { message = "Failed to update" });
+            }
+
+            return Ok(new { message = "Update successfull" });
+        }
+
+       
+
+
+        [NonAction]
+        public async Task<string> SaveFile(IFormFile file)
+        {
+            string fileName = new String(Path.GetFileNameWithoutExtension(file.FileName).Take(10).ToArray()).Replace(' ', '-');
+            fileName = fileName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(file.FileName);
+            var filePath = Path.Combine(_hostEnvironment.ContentRootPath, "UploadFiles", fileName);
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+            return fileName;
+        }
+
+        [NonAction]
+        public void DeleteFile(string fileName) 
+        {
+            var filePath = Path.Combine(_hostEnvironment.ContentRootPath, "UploadFiles", fileName);
+            if (System.IO.File.Exists(filePath))
+                System.IO.File.Delete(filePath);
+        }
+
+        //---
+       
     }
 
 }

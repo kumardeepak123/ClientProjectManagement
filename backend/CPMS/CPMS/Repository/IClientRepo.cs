@@ -9,12 +9,11 @@ namespace CPMS.Repository
 {
     public interface IClientRepo
     {
-        //get
+
         Task<Client> getClientById(int id);
-        Task<IActionResult> DownloadAgreementPaper(int id);
-        //post
+        Task<List<Client>> getAllClients();
         Task<bool> AddClient(Client client);
-        //update
-        //delete
+        Task<bool> UpdateClient(int id, Client client);
+ 
     }
 }

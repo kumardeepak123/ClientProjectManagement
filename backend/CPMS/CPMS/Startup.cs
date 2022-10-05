@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -37,6 +39,10 @@ namespace CPMS
 
             services.AddDbContext<CPMDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("CPMConnection")));
             services.AddScoped<IClientRepo, ClientRepo>();
+            services.AddCors(options => options.AddDefaultPolicy(
+               builder => builder.WithOrigins("*").AllowAnyHeader().
+               AllowAnyMethod().AllowAnyOrigin())
+               );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,10 +54,17 @@ namespace CPMS
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CPMS v1"));
             }
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "UploadFiles")),
+                RequestPath = "/UploadFiles"
+            });
 
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {
