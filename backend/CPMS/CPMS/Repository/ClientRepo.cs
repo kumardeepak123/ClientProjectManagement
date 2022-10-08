@@ -44,6 +44,20 @@ namespace CPMS.Repository
             return true;
         }
 
+        public async Task<Client> DeleteClient(int id)
+        {
+            var client = await cPMDbContext.Clients.Where(x => x.Id == id)
+                                .FirstOrDefaultAsync();
+            if(client == null)
+            {
+                return null;
+            }
+            cPMDbContext.Clients.Remove(client);
+
+            await cPMDbContext.SaveChangesAsync();
+            return client;
+        }
+
         public async Task<List<Client>> getAllClients()
         {
            return await cPMDbContext.Clients.ToListAsync();
@@ -54,6 +68,12 @@ namespace CPMS.Repository
             var client = await cPMDbContext.Clients.Where(x => x.Id == id)
                                .FirstOrDefaultAsync();
             return  client;   
+        }
+
+        public async Task<Client> SignIn(string email, string password)
+        {
+            var client = await cPMDbContext.Clients.Where(x => x.Email == email && x.Password == password).FirstOrDefaultAsync();
+            return client;
         }
 
         public async Task<bool> UpdateClient(int id, Client client)

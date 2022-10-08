@@ -14,6 +14,8 @@ namespace CPMS.Repository
         Task<List<Client>> getAllClients();
         Task<bool> AddClient(Client client);
         Task<bool> UpdateClient(int id, Client client);
+        Task<Client> DeleteClient(int id);
+        Task<Client> SignIn(string email, string password);
  
     }
 }

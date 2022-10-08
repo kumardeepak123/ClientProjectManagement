@@ -66,17 +66,34 @@ namespace CPMS.Controllers
         {
             var clients = await _IClientRepo.getAllClients();
 
-            var res = clients.Where(x=> x.Role == "Client").Select(client => new Client
+            var res = clients.Where(x=> x.Role == "Client").Select(client => new 
             {   Id = client.Id,
                 Name =client.Name,
                 Email = client.Email,
                 Phone = client.Phone,
                 Organization = client.Organization,
+                ProfileImageName = client.ProfileImageName,
+                AgreementPaperName = client.AgreementPaperName,
                 ProfileImageSrc = String.Format("{0}://{1}{2}/UploadFiles/{3}", Request.Scheme, Request.Host, Request.PathBase, client.ProfileImageName),
                 AgreementPaperSrc = String.Format("{0}://{1}{2}/UploadFiles/{3}", Request.Scheme, Request.Host, Request.PathBase, client.AgreementPaperName)
             }).ToList();
 
             return Ok(res);
+        }
+
+        [HttpGet("signin")]
+        public async Task<IActionResult> SignIn(string email, string password)
+        {
+            var client = await _IClientRepo.SignIn(email, password);
+            if(client == null)
+            {
+                return NotFound(new { message = "Invalid credentials" });
+            }
+
+            return Ok(new {
+                message = "SignIn successfull",
+                UserId = client.Id
+            });
         }
 
         [HttpPut("update/{id}")]
@@ -102,7 +119,20 @@ namespace CPMS.Controllers
             return Ok(new { message = "Update successfull" });
         }
 
-       
+        [HttpDelete("delete/{id}")]
+       public async Task<IActionResult> DeleteClient(int id)
+        {
+            var client =  await _IClientRepo.DeleteClient(id);
+            if (client == null)
+            {
+                return NotFound();
+            }
+            DeleteFile(client.AgreementPaperName);
+            DeleteFile(client.ProfileImageName);
+
+            return Ok(new { message = "Deleted successfully" });
+           
+        }
 
 
         [NonAction]

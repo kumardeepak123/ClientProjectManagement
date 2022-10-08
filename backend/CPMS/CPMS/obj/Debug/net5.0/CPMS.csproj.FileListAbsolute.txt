@@ -112,7 +112,6 @@ C:\Users\deepa\OneDrive\Desktop\ClientProjectManagement\backend\CPMS\CPMS\bin\De
 C:\Users\deepa\OneDrive\Desktop\ClientProjectManagement\backend\CPMS\CPMS\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\deepa\OneDrive\Desktop\ClientProjectManagement\backend\CPMS\CPMS\bin\Debug\net5.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\deepa\OneDrive\Desktop\ClientProjectManagement\backend\CPMS\CPMS\bin\Debug\net5.0\Microsoft.OpenApi.dll
-C:\Users\deepa\OneDrive\Desktop\ClientProjectManagement\backend\CPMS\CPMS\bin\Debug\net5.0\Newtonsoft.Json.dll
 C:\Users\deepa\OneDrive\Desktop\ClientProjectManagement\backend\CPMS\CPMS\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\deepa\OneDrive\Desktop\ClientProjectManagement\backend\CPMS\CPMS\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\deepa\OneDrive\Desktop\ClientProjectManagement\backend\CPMS\CPMS\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
@@ -149,3 +148,4 @@ C:\Users\deepa\OneDrive\Desktop\ClientProjectManagement\backend\CPMS\CPMS\obj\De
 C:\Users\deepa\OneDrive\Desktop\ClientProjectManagement\backend\CPMS\CPMS\obj\Debug\net5.0\ref\CPMS.dll
 C:\Users\deepa\OneDrive\Desktop\ClientProjectManagement\backend\CPMS\CPMS\obj\Debug\net5.0\CPMS.pdb
 C:\Users\deepa\OneDrive\Desktop\ClientProjectManagement\backend\CPMS\CPMS\obj\Debug\net5.0\CPMS.genruntimeconfig.cache
+C:\Users\deepa\OneDrive\Desktop\ClientProjectManagement\backend\CPMS\CPMS\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

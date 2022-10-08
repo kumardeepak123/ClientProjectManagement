@@ -12,7 +12,7 @@ namespace CPMS.Models
         public int Id { get; set; }
 
         [Required, MaxLength(30)]
-        public int Name { get; set; }
+        public string Name { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
