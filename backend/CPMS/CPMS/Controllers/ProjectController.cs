@@ -1,5 +1,6 @@
 ﻿using CPMS.Models;
 using CPMS.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -22,6 +23,7 @@ namespace CPMS.Controllers
         }
 
         [HttpPost("create")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateProject(Project project)
         {   // default ClientId is 0
             project.ClientId = null;
@@ -34,7 +36,9 @@ namespace CPMS.Controllers
 
             return Ok(new { message = "Project created successfully" });
         }
+
         [HttpGet("details/{id}")]
+        [Authorize(Roles = "Admin,Client")]
         public async Task<IActionResult> GetProjectById(int id)
         {
             var project = await _IProjectRepo.GetProjectById(id);
@@ -47,7 +51,8 @@ namespace CPMS.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<Project>>> GetAllProdutcs()
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<IEnumerable<Project>>> GetAllPrjects()
         {
             var projects = await _IProjectRepo.GetAllProjects();
             if(projects == null)
@@ -59,6 +64,7 @@ namespace CPMS.Controllers
         }
 
         [HttpPut("update/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateProject(int id, Project project)
         {
             var res = await  _IProjectRepo.UpdateProject(id, project);
@@ -71,6 +77,7 @@ namespace CPMS.Controllers
         }
 
         [HttpDelete("delete/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProject(int id)
         {
             var res = await _IProjectRepo.DeleteProject(id);
@@ -83,6 +90,7 @@ namespace CPMS.Controllers
 
 
         [HttpGet("client/{id}")]
+        [Authorize(Roles ="Admin,Client")]
         public async Task<ActionResult<IEnumerable<Project>>> GetProjectsUnderClient(int id)
         {
             var projects = await _IProjectRepo.GetProjectsUnderClient(id);

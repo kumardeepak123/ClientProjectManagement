@@ -1,12 +1,18 @@
 ﻿using CPMS.Models;
 using CPMS.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace CPMS.Controllers
@@ -17,16 +23,19 @@ namespace CPMS.Controllers
     {
         private readonly IClientRepo _IClientRepo;
         private readonly IWebHostEnvironment _hostEnvironment;
+        private IConfiguration _config;
 
-        public ClientController(IClientRepo iClientRepo, IWebHostEnvironment hostEnvironment)
+        public ClientController(IClientRepo iClientRepo, IWebHostEnvironment hostEnvironment, IConfiguration config)
         {
             _IClientRepo = iClientRepo;
             this._hostEnvironment = hostEnvironment;
+            _config = config;
         }
 
         
 
         [HttpPost("create")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> CreateClient([FromForm] Client client)
         {
             string FileExtension = Path.GetExtension(client.AgreementPaperFile.FileName);
@@ -48,6 +57,7 @@ namespace CPMS.Controllers
         
         [HttpGet]
         [Route("details/{id}")]
+        [Authorize(Roles = "Admin,Client")]
         public async Task<IActionResult> GetClientById(int id)
         {
             var client = await _IClientRepo.getClientById(id);
@@ -62,6 +72,7 @@ namespace CPMS.Controllers
         }
 
         [HttpGet("all")]
+        [Authorize(Roles = "Admin")]
         public  async Task<ActionResult<List<Client>>> GetAllClients()
         {
             var clients = await _IClientRepo.getAllClients();
@@ -75,28 +86,63 @@ namespace CPMS.Controllers
                 ProfileImageName = client.ProfileImageName,
                 AgreementPaperName = client.AgreementPaperName,
                 ProfileImageSrc = String.Format("{0}://{1}{2}/UploadFiles/{3}", Request.Scheme, Request.Host, Request.PathBase, client.ProfileImageName),
-                AgreementPaperSrc = String.Format("{0}://{1}{2}/UploadFiles/{3}", Request.Scheme, Request.Host, Request.PathBase, client.AgreementPaperName)
+                AgreementPaperSrc = String.Format("{0}://{1}{2}/UploadFiles/{3}", Request.Scheme, Request.Host, Request.PathBase, client.AgreementPaperName),
+                Role = client.Role
             }).ToList();
 
             return Ok(res);
         }
 
-        [HttpGet("signin")]
+        [AllowAnonymous]
+        [HttpPost("signin")]
         public async Task<IActionResult> SignIn(string email, string password)
         {
-            var client = await _IClientRepo.SignIn(email, password);
-            if(client == null)
+            var user = await Authenticate(email, password);
+            if(user != null)
             {
-                return NotFound(new { message = "Invalid credentials" });
+                var token = Generate(user);
+                return Ok(new
+                {
+                    message = "SignIn successfull",
+                    UserId = user.Id,
+                    Token = token
+                });
             }
 
-            return Ok(new {
-                message = "SignIn successfull",
-                UserId = client.Id
-            });
+            return NotFound(new { message = "User Not Found" });
+        }
+
+        [NonAction]
+        private string Generate(Client user)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Name),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role)
+            };
+
+            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
+              _config["Jwt:Audience"],
+              claims,
+              expires: DateTime.Now.AddMinutes(15),
+              signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        [NonAction]
+        private async  Task<Client> Authenticate(string email, string password)
+        {
+            var client = await _IClientRepo.SignIn(email, password);
+            return client;
         }
 
         [HttpPut("update/{id}")]
+        [Authorize(Roles ="Admin,Client")]
         public async Task<IActionResult> UpdateClient(int id,[FromForm] Client client)
         {
             if (client.ProfileImageFile != null)
@@ -120,7 +166,8 @@ namespace CPMS.Controllers
         }
 
         [HttpDelete("delete/{id}")]
-       public async Task<IActionResult> DeleteClient(int id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteClient(int id)
         {
             var client =  await _IClientRepo.DeleteClient(id);
             if (client == null)

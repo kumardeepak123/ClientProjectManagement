@@ -80,6 +80,7 @@ namespace CPMS
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseCors();
