@@ -14,7 +14,7 @@ import {json, useNavigate} from 'react-router-dom';
 
 
   
-const Login=()=>{
+function Login (){
 
     const[email,setEmail]= useState("");
     const[password,setPassword]= useState("");
@@ -33,7 +33,8 @@ const Login=()=>{
        }
     }
     
-    const  handleLogin=()=>{
+    const navigate = useNavigate();
+    const  handleLogin=async ()=>{
        if(email ===''){
         setError(true);
         setErrorMessage('Please enter email');
@@ -60,7 +61,7 @@ const Login=()=>{
        setError(false);
        setErrorMessage('');
 
-      fetch("https://localhost:44327/api/Client/signin?email="+email+"&password="+password,{
+      var res =  await fetch("https://localhost:44327/api/Client/signin?email="+email+"&password="+password,{
         method:"POST",
         headers:{
           "Content-Type":"application/json",
@@ -69,12 +70,28 @@ const Login=()=>{
        })
        .then(res=> res.json())
        .then(res=>{
+        if(!res.token){
+          setError(true);
+          setErrorMessage(res.message);
+          return;
+        }
+        else{
+          localStorage.setItem("user-info", JSON.stringify(res));
+          let user = JSON.parse(localStorage.getItem("user-info"));
+         
+          if(user.role === "Admin"){
+           navigate(`/admin/dashboard/${user.userId}`);
+          }
+          else if(user.role == "Client"){
+           navigate(`/client/dashboard/${user.userId}`);
+          }
+        }
         
-         localStorage.setItem("user-info", JSON.stringify(res));
-         let user = localStorage.getItem("user-info");
-         console.warn(user.Id);
-
+        
+        
+         
        })
+       
 
     }
 
@@ -92,7 +109,7 @@ const Login=()=>{
               <MDBCardBody className='d-flex flex-column' >
   
                 <div className='d-flex flex-row mt-2'>
-                  <MDBIcon fas icon="cubes fa-3x me-3" style={{ color: '#ff6219' }}/>
+                  {/* <MDBIcon fas icon="cubes fa-3x me-3" style={{ color: '#ff6219' }}/> */}
                   <span className="h1 fw-bold mb-0">Login</span>
                 </div>
   
@@ -102,14 +119,11 @@ const Login=()=>{
                <MDBInput onChange={handleChange('password')} wrapperClass='mb-4' label='Enter Password' id='formControlLg' type='password' size="lg" />              
   
                 
-                <button className='btn btn-lg btn-primary' onClick={handleLogin} >Login</button>
+                <button className='btn btn-lg ' style={{backgroundColor:'#29ae7d'}} onClick={handleLogin} >Login</button>
                 {error && <div style={{textAlign:'center'}}>
                 <b style={{color:'red'}}>{errorMessage}</b>
                 </div>}
-                <div className='d-flex flex-row justify-content-start'>
-                  <a href="/" className="small text-muted me-1"><b>Back to home</b></a>
-                  
-                </div>
+                
   
               </MDBCardBody>
             </MDBCol>

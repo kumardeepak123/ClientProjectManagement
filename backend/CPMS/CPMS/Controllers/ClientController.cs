@@ -104,7 +104,8 @@ namespace CPMS.Controllers
                 return Ok(new
                 {
                     message = "SignIn successfull",
-                    UserId = user.Id,
+                    UserId = user.Id,   
+                    Role = user.Role,
                     Token = token
                 });
             }

@@ -1,0 +1,102 @@
+import React,{useState, useEffect}from "react";
+import { Col, Container, Row } from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import { useNavigate } from "react-router";
+
+const AdminDashboard=()=>{
+  const[adminInfo, setAdminInfo]=useState(
+    {
+        "id": 0,
+        "name": "",
+        "email": "",
+        "password": "",
+        "phone": "",
+        "organization": "",
+        "profileImageName": "",
+        "agreementPaperName": "",
+        "role": "",
+        "projects": null,
+        "profileImageFile": null,
+        "profileImageSrc": "",
+        "agreementPaperFile": null,
+        "agreementPaperSrc": ""
+    });
+    const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user-info'));
+  
+  
+  useEffect(()=>{
+    if(user.role!== "Admin"){
+      alert("You are not authorized");
+      localStorage.clear();
+      navigate("/login");
+    }
+
+    fetch(`https://localhost:44327/api/Client/details/${user.userId}`,{
+       headers:{
+           "Authorization" : `Bearer ${user.token}`
+       }
+    })
+    .then(res=> res.json())
+    .then(res=>{
+       setAdminInfo(res);
+       
+    })
+    .catch(err=>console.log(err));
+ },[])
+
+  const goToAdminProfile=()=>{
+    navigate(`/admin/profile`);
+  }
+return(
+    <div className="h1 fw-bold mb-0" style={{marginTop:"5%"}}>
+            <h1 style={{textAlign:"center"}}>Admin Dashboard</h1>
+            <h5 style={{textAlign:"center"}}>Welcome {adminInfo.name}</h5>
+            
+        <div style={{marginTop:"7vw"}}>
+        <Container>
+    <Row>
+        <Col sm={4}>
+    <Card style={{background:"#cdebe0", border:"1px solid rgb(0,0,0)"}}>
+      <Card.Body>
+        <Card.Text>
+            <h2>View Profile</h2>
+            
+        </Card.Text>
+        <Button style={{marginTop:"30px",backgroundColor:'#29ae7d'}} onClick={goToAdminProfile} >Go</Button>
+      </Card.Body>
+    </Card>
+    </Col>
+    <Col sm={4}>
+    <Card style={{background:"#cdebe0", border:"1px solid rgb(0,0,0)"}}>
+      <Card.Body>
+      <Card.Text>
+            <h2>Handle Clients</h2>
+            
+        </Card.Text>
+        <Button  style={{marginTop:"30px",backgroundColor:'#29ae7d'}} onClick={()=>navigate(`/admin/handle/clients`)} >Go</Button>
+      </Card.Body>
+    </Card>
+    </Col>
+    <Col sm={4}>
+    <Card style={{background:"#cdebe0", border:"1px solid rgb(0,0,0)"}}>
+      <Card.Body>
+      <Card.Text>
+            <h2>Handle Projects</h2>
+            
+        </Card.Text>
+        <Button  style={{marginTop:"30px",backgroundColor:'#29ae7d'}} >Go</Button>
+      </Card.Body>
+    </Card>
+    </Col>
+    
+    </Row>
+    </Container>
+    </div>   
+</div>
+);
+}
+
+
+export default AdminDashboard;
