@@ -61,7 +61,6 @@ const AdminProfile=()=>{
                   <MDBCardImage src={adminInfo.profileImageSrc}
                     alt="Avatar" className="my-5" style={{ width: '80px' }} fluid />
                   <MDBTypography tag="h5">{adminInfo.name}</MDBTypography>
-                  <MDBCardText>Hii</MDBCardText>
                   <MDBIcon far icon="edit mb-5" />
                 </MDBCol>
                 <MDBCol md="8">
