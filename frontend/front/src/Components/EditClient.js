@@ -67,7 +67,7 @@ const EditClient=()=>{
     }
 
     const loadProjects = async()=>{
-        await fetch(`https://localhost:44327/api/Project/all`,{
+        await fetch(`https://localhost:44327/api/Project/noclient`,{
            headers:{
                "Authorization" : `Bearer ${user.token}`
            }
@@ -284,20 +284,26 @@ const EditClient=()=>{
                       <h6 className="mb-0">Assign Project</h6>
                     </MDBCol>    
                   </MDBRow>
-                   <select id="leavetype" onChange={handleChange("assignProject")}>
-                    {/* <option  value={p.id}>{p.name}</option> */}
-                        {projects.map((p, index)=>
-                            // if(p.clientId == null){
-                            //     return(
-                            //         <option key={index} value={p.id}>{p.name}</option>
-                            //     )
-                            // }
-                        
-                            <option key={index} value={p.id}>{p.name}</option>
-                        
-                        )}
-                        
-                    </select>
+                  {
+                    projects.length !== 0 ? (
+                      <select id="leavetype" onChange={handleChange("assignProject")}>
+                      <option  value="select ...">select...</option>
+                          {projects.map((p, index)=>
+                              // if(p.clientId == null){
+                              //     return(
+                              //         <option key={index} value={p.id}>{p.name}</option>
+                              //     )
+                              // }
+                          
+                              <option key={index} value={p.id}>{p.name}</option>
+                          
+                          )}
+                          
+                      </select>
+                    ):(
+                      <p style={{color:"red"}}>No projects available</p>
+                    )
+                  }
                     
 
                   <hr className="mx-n3" />

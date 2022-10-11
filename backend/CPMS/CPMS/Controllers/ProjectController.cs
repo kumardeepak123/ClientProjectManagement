@@ -101,5 +101,43 @@ namespace CPMS.Controllers
 
             return Ok(projects);
         }
+
+        [HttpGet("noclient")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<IEnumerable<Project>>> GetProjectsWithNoClients()
+        {
+            var projects = await _IProjectRepo.GetProjectsWithNoClient();
+            if (projects == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(projects);
+        }
+
+        [HttpPut("update/clientIds/{id}")]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> UpdateClientIds(int id)
+        {
+            var projects = await _IProjectRepo.GetAllProjects();
+            if (projects == null)
+            {
+                return NotFound();
+            }
+
+            foreach(var p in projects)
+            {
+                if(p.ClientId == id)
+                {
+                    p.ClientId = null;
+                    var res = await _IProjectRepo.UpdateProject(p.Id, p);
+                }
+                
+
+            }
+
+            return Ok(new { message = "All Client Ids updated" });
+        }
+
     }
 }

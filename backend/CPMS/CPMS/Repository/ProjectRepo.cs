@@ -71,6 +71,12 @@ namespace CPMS.Repository
             return projects;
         }
 
+        public async Task<List<Project>> GetProjectsWithNoClient()
+        {
+            var projects = await cPMDbContext.Projects.Where(x => x.ClientId == null).ToListAsync();
+            return projects;
+        }
+
         public async Task<bool> UpdateProject(int id, Project project)
         {
             var proj = await cPMDbContext.Projects.Where(x => x.Id == id).FirstOrDefaultAsync();

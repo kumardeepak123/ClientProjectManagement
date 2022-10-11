@@ -21,26 +21,40 @@ const ViewCliet=()=>{
             "agreementPaperFile": null,
             "agreementPaperSrc": ""
         });
-      const[error, setError]= useState("");
+      const[projects, setProjects]=useState([]);
 
       const user =  JSON.parse(localStorage.getItem('user-info'));
       const {id} = useParams();
       const navigate = useNavigate();
-    
-      useEffect(()=>{
-        
-    
-         fetch(`https://localhost:44327/api/Client/details/${id}`,{
+
+      const loadClient=async()=>{
+           
+        await fetch(`https://localhost:44327/api/Client/details/${id}`,{
+          headers:{
+              "Authorization" : `Bearer ${user.token}`
+          }
+       })
+       .then(res=> res.json())
+       .then(res=>{
+          setAdminInfo(res);
+          
+       })
+       .catch(err=>console.log(err));
+      }
+      const loadProjects=async()=>{
+          await fetch(`https://localhost:44327/api/Project/client/${id}`,{
             headers:{
-                "Authorization" : `Bearer ${user.token}`
+              Authorization: `Bearer ${user.token}`
             }
-         })
-         .then(res=> res.json())
-         .then(res=>{
-            setAdminInfo(res);
-            
-         })
-         .catch(err=>console.log(err));
+          })
+          .then(res=>res.json())
+          .then(res=>{
+            setProjects(res);
+          })
+      }
+      useEffect(()=>{
+        loadClient();
+        loadProjects();
       },[])
     
       function BacktoDash(){
@@ -95,18 +109,38 @@ const ViewCliet=()=>{
                           </MDBCol>
                          
                         </MDBRow>
-    
-                        {/* <MDBTypography tag="h6">Information</MDBTypography> */}
                         <hr className="mt-0 mb-4" />
-                        
-    
+                        <MDBRow className="pt-1">
+                          <MDBCol size="6" className="mb-3">
+                            <MDBTypography tag="h6">Projects</MDBTypography>                           
+                          </MDBCol>
+                        </MDBRow>
+                        {
+                          projects.length!=0 ?(
+                            projects.map((e,i)=>
+                            <ul key={i} className="list-group list-group-light">
+                                <li className="list-group-item d-flex justify-content-between align-items-center">
+                                  <div className="d-flex align-items-center">
+
+                                    <div className="ms-3">
+                                      <p className="fw-bold mb-1">{e.name}</p>
+                                    </div>
+                                  </div>
+                                  <button className="btn  btn-rounded btn-sm" >View</button>
+                                </li>
+                              </ul>
+                          )
+                          ):(
+                            <p style={{color:'red'}}>No projects to display</p>
+                          )
+                        }
                         <MDBBtn className="mb-4 px-6" color='dark' size='md'  onClick={BacktoDash} >Back</MDBBtn>
                       </MDBCardBody>
                     </MDBCol>
                   </MDBRow>
                 </MDBCard>
               </MDBCol>
-            </MDBRow>
+            </MDBRow>  
           </MDBContainer>
         </section>
       );

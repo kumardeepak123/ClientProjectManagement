@@ -37,7 +37,7 @@ const CreateClient=()=>{
     }
 
     const addClient=()=>{
-        alert(client);
+        
          const  formData =  new FormData();
          formData.append("Id", 2);
          formData.append("Name", client.name);
@@ -170,7 +170,7 @@ const CreateClient=()=>{
     
                   <hr className="mx-n3" />
     
-                  <MDBBtn className='my-4' size='lg' onClick={addClient}>Create</MDBBtn>
+                  <button className='btn btn-lg btn-primary'  onClick={addClient}>Create</button>
     
                 </MDBCardBody>
               </MDBCard>

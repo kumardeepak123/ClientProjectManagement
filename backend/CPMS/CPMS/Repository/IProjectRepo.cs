@@ -14,5 +14,6 @@ namespace CPMS.Repository
         Task<bool> UpdateProject(int id, Project project);
         Task<bool> DeleteProject(int id);
         Task<List<Project>> GetProjectsUnderClient(int id);
+        Task<List<Project>> GetProjectsWithNoClient();
     }
 }
