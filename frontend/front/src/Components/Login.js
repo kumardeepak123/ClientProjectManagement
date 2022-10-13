@@ -72,7 +72,7 @@ function Login (){
        .then(res=>{
         if(!res.token){
           setError(true);
-          setErrorMessage(res.message);
+          setErrorMessage("Invalid Credentials");
           return;
         }
         else{

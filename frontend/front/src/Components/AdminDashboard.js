@@ -86,7 +86,7 @@ return(
             <h2>Handle Projects</h2>
             
         </Card.Text>
-        <Button  style={{marginTop:"30px",backgroundColor:'#29ae7d'}} >Go</Button>
+        <Button  style={{marginTop:"30px",backgroundColor:'#29ae7d'}} onClick={()=>{navigate(`/admin/projects`)}} >Go</Button>
       </Card.Body>
     </Card>
     </Col>

@@ -101,7 +101,15 @@ const EditClient=()=>{
     }
    
     const EditClientHandle= (e)=>{
-        
+      if(!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(client.email))
+      {
+       alert("Invalid email address");
+       return;
+      }
+      if(client.password.length<5){
+        alert("Password should be minimum of 5 characters");
+        return;
+       }
         //load project
         fetch(`https://localhost:44327/api/Project/details/${projectId}`,{
             headers:{
@@ -308,8 +316,9 @@ const EditClient=()=>{
 
                   <hr className="mx-n3" />
     
-                  <button className='btn btn-primary'  onClick={EditClientHandle}>Edit</button>
-    
+                  <button className='btn btn-lg btn-primary mr-3'  onClick={EditClientHandle}>Edit</button>
+                  <button className='btn btn-lg btn-secondary'  onClick={()=>{navigate(`/admin/handle/clients`)}}>Cancel</button>
+                  
                 </MDBCardBody>
               </MDBCard>
     

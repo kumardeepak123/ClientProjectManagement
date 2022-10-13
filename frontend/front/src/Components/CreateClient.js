@@ -29,6 +29,7 @@ const CreateClient=()=>{
     const navigate = useNavigate();
 
     const handleChange=name=>(event)=>{
+        
         if(name === "profileImageFile" || name === "agreementPaperFile"){
             setClient({...client,[name]:event.target.files[0]})
             return;
@@ -37,7 +38,36 @@ const CreateClient=()=>{
     }
 
     const addClient=()=>{
-        
+         if(client.name==="" || client.email===""|| client.password===""||
+         client.phone===""|| client.organization===""||
+         client.agreementPaperFile==null ||
+         client.profileImageFile==null)
+         {
+          alert("Please include all the fields");
+          return;
+         }
+         if(!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(client.email))
+       {
+        alert("Invalid email address");
+        return;
+       }
+         var afileExtn=client.agreementPaperFile.name.split(".").pop()
+         if(afileExtn !== 'pdf'){
+          alert("Please select .pdf files only");
+          return;
+         }
+
+         var pfileExtn=client.profileImageFile.name.split(".").pop()
+         if(pfileExtn !== 'png' && pfileExtn!=='jpeg' && pfileExtn!=='jpg'){
+          alert("Please .png or .jpeg image");
+          return;
+         }
+
+         if(client.password.length<5){
+          alert("Password should be minimum of 5 characters");
+          return;
+         }
+
          const  formData =  new FormData();
          formData.append("Id", 2);
          formData.append("Name", client.name);
@@ -170,8 +200,8 @@ const CreateClient=()=>{
     
                   <hr className="mx-n3" />
     
-                  <button className='btn btn-lg btn-primary'  onClick={addClient}>Create</button>
-    
+                  <button className='btn btn-lg btn-primary mr-3'  onClick={addClient}>Create</button>
+                  <button className='btn btn-lg btn-secondary'  onClick={()=>{navigate(`/admin/handle/clients`)}}>Cancel</button>
                 </MDBCardBody>
               </MDBCard>
     
