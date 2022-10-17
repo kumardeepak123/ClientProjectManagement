@@ -13,7 +13,7 @@ import {
   }
   from 'mdb-react-ui-kit';
   
-const EditClient=()=>{
+const ClientEdit=()=>{
     const[client, setClient]= useState({
         "id": 2,
         "name": "",
@@ -30,22 +30,7 @@ const EditClient=()=>{
         "agreementPaperFile": null,
         "agreementPaperSrc": ""
     });
-    const[projects, setProjects]= useState([]);
-    const[projectId, setProjectId]= useState(0);
-    const[projectInfo, setProjectInfo]= useState(
-        {
-            "id": 2,
-            "name": "",
-            "startDate": "",
-            "endDate": "",
-            "technology": "",
-            "fRequirement": "",
-            "nfRequirement": "",
-            "budget": 0,
-            "_Client": null,
-            "clientId": 0
-        }
-    );
+    
 
     const user =  JSON.parse(localStorage.getItem('user-info'));
     const navigate = useNavigate();
@@ -66,24 +51,12 @@ const EditClient=()=>{
         .catch(err=>console.log(err));
     }
 
-    const loadProjects = async()=>{
-        await fetch(`https://localhost:44327/api/Project/noclient`,{
-           headers:{
-               "Authorization" : `Bearer ${user.token}`
-           }
-        })
-        .then(res=> res.json())
-        .then(res=>{
-           setProjects(res);
-           
-        })
-        .catch(err=>console.log(err));
-    }
+    
 
 
     useEffect(()=>{
         loadAdminInfo();
-        loadProjects();
+        
      },[])
 
     const handleChange=name=>(event)=>{
@@ -92,22 +65,17 @@ const EditClient=()=>{
             return;
         }
 
-        if(name === "assignProject"){
-            setProjectId(event.target.value);
-            return;
-        }
-
         setClient({...client,[name]:event.target.value})
     }
    
     const EditClientHandle= (e)=>{
-      if(client.name==="" || client.email===""|| client.password===""||
-         client.phone===""|| client.organization===""
-         )
-         {
-          alert("Please include all the fields");
-          return;
-         }
+        if(client.name==="" || client.email===""|| client.password===""||
+        client.phone===""|| client.organization===""
+        )
+        {
+         alert("Please include all the fields");
+         return;
+        }
 
       if(!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(client.email))
       {
@@ -118,22 +86,6 @@ const EditClient=()=>{
         alert("Password should be minimum of 5 characters");
         return;
        }
-        //load project
-        fetch(`https://localhost:44327/api/Project/details/${projectId}`,{
-            headers:{
-                "Authorization" : `Bearer ${user.token}`
-            }
-        })
-        .then(res=> res.json())
-        .then(resProj=>{
-            setProjectInfo(resProj);
-            //setProj({...proj,"clientId":client.id});
-            const resProject = {...resProj,"clientId":client.id};
-            console.log(resProject)
-            
-            //console.log(JSON.stringify(proj)+">>");
-            
-            //update client
             const  formData =  new FormData();
             formData.append("Id", 2);
             formData.append("Name", client.name);
@@ -158,45 +110,19 @@ const EditClient=()=>{
          })
          .then(res=>res.json())
          .then(res=>{
-            //console.log("CLient UPDATED");
-            //console.log(project+"?????")
-            //update project
-            console.log(projectId);
-            //console.log(JSON.stringify(projectInfo));
-            fetch(`https://localhost:44327/api/Project/update/${projectId}`,{
-            method:'PUT',
-            headers:{
-                "Authorization" : `Bearer ${user.token}`,
-                "Content-Type":"application/json",
-                "Accept":'application/json'
-            },
-            body:JSON.stringify(resProject)
-           })
-           .then(res=> res.json())
-           .then(res=>{
-            
             alert("Updated successfully");
-            navigate(`/admin/handle/clients`);
-           })
-
-         })
-
-          
-                      
-        })
+            navigate(`/client/dashboard/${id}`);
+           })                     
         
-        
-
-         
-         //navigate("/admin/handle/clients");
     }
+
     return (
         <MDBContainer fluid>
     
           <MDBRow className='d-flex justify-content-center align-items-center'>
             <MDBCol lg='5' className='my-5'>
     
-              <h1 class="text-black mb-4">Edit Client</h1>
+              <h1 class="text-black mb-4">Edit</h1>
     
               <MDBCard>
                 <MDBCardBody className='px-4'>
@@ -294,38 +220,12 @@ const EditClient=()=>{
     
                   </MDBRow>
 
-                  <MDBRow className='align-items-center pt-4 pb-3'>
-    
-                    <MDBCol md='3' className='ps-5'>
-                      <h6 className="mb-0">Assign Project</h6>
-                    </MDBCol>    
-                  </MDBRow>
-                  {
-                    projects.length !== 0 ? (
-                      <select id="leavetype" onChange={handleChange("assignProject")}>
-                      <option  value="select ...">select...</option>
-                          {projects.map((p, index)=>
-                              // if(p.clientId == null){
-                              //     return(
-                              //         <option key={index} value={p.id}>{p.name}</option>
-                              //     )
-                              // }
-                          
-                              <option key={index} value={p.id}>{p.name}</option>
-                          
-                          )}
-                          
-                      </select>
-                    ):(
-                      <p style={{color:"red"}}>No projects available</p>
-                    )
-                  }
-                    
-
+                  
+                  
                   <hr className="mx-n3" />
     
                   <button className='btn btn-lg btn-primary mr-3'  onClick={EditClientHandle}>Edit</button>
-                  <button className='btn btn-lg btn-secondary'  onClick={()=>{navigate(`/admin/handle/clients`)}}>Cancel</button>
+                  <button className='btn btn-lg btn-secondary'  onClick={()=>{navigate(`/client/profile`)}}>Cancel</button>
                   
                 </MDBCardBody>
               </MDBCard>
@@ -339,4 +239,4 @@ const EditClient=()=>{
 
 }
 
-export default EditClient;
+export default ClientEdit;

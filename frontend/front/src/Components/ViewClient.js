@@ -126,7 +126,7 @@ const ViewCliet=()=>{
                                       <p className="fw-bold mb-1">{e.name}</p>
                                     </div>
                                   </div>
-                                  <button className="btn  btn-rounded btn-sm" onClick={()=>{navigate(`/admin/view/project/${e.id}`)}}>View</button>
+                                  <button className="btn  btn-rounded btn-sm" onClick={()=>{navigate(`/admin/client/project/${e.id}`)}}>View</button>
                                 </li>
                               </ul>
                           )

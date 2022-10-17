@@ -93,7 +93,8 @@ const AdminProfile=()=>{
                     {/* <MDBTypography tag="h6">Information</MDBTypography> */}
                     <hr className="mt-0 mb-4" />
                     
-
+                    <button className="btn btn-md mb-2" onClick={()=>{navigate(`/admin/profile/edit/${user.userId}`)}}>Edit</button>
+                    <br/>
                     <MDBBtn className="mb-4 px-6" color='dark' size='md'  onClick={BacktoDash} >Back To Dashboard</MDBBtn>
                   </MDBCardBody>
                 </MDBCol>

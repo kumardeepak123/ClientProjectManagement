@@ -16,6 +16,11 @@ import AllProjects from './Components/AllProjects';
 import ViewProject from './Components/ViewProject';
 import CreateProject from './Components/CreateProject';
 import EditProject from './Components/EditProject';
+import EditAdmin from './Components/EditAdmin';
+import ClientProject from './Components/ClientProject';
+import ClientEdit from './Components/ClientEdit';
+import ClientProjectsView from './Components/ClientProjectsView';
+
 function App() {
   return (
     <div > 
@@ -35,7 +40,10 @@ function App() {
             <Route path='/admin/view/project/:id' element={<Protected Cmp={ViewProject}/>}/>  
             <Route path='/admin/create/project' element={<Protected Cmp={CreateProject}/>}/>  
             <Route path='/admin/edit/project/:id' element={<Protected Cmp={EditProject}/>}/>  
-
+            <Route path='/admin/profile/edit/:id' element={<Protected Cmp={EditAdmin}/>}/> 
+            <Route path='/admin/client/project/:id' element={<Protected Cmp={ClientProjectsView}/>}/> 
+            <Route path='/client/projects/:id' element={<Protected Cmp={ClientProject}/>}/> 
+            <Route path='/client/edit/:id' element={<Protected Cmp={ClientEdit}/>}/> 
         </Route> 
         </Routes>
      </BrowserRouter>

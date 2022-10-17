@@ -1,5 +1,6 @@
 import React ,{useState, useEffect}from "react";
 import {useParams, useNavigate} from 'react-router-dom'
+import Moment from 'moment'
 import {
     MDBContainer,
     MDBRow,
@@ -37,6 +38,22 @@ const EditProject=()=>{
 
 
     const editProject=()=>{
+
+      if(project.name===""|| project.startDate===""|| project.endDate==="" ||
+      project.budget===""|| project.technology===""|| project.fRequirement===""
+      ||project.nfRequirement==="")
+      {
+          alert("Please include all the fields");
+          return;
+      }
+      
+      const sDate = Moment(project.startDate).format('YYYY-MM-DD');
+      const eDate = Moment(project.endDate).format('YYYY-MM-DD');
+      if(eDate<=sDate){
+          alert("End date should be greater than start date");
+          return;
+      }
+
      fetch(`https://localhost:44327/api/Project/update/${id}`,{
         method:'PUT',
         headers:{
