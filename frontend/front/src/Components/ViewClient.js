@@ -60,6 +60,31 @@ const ViewCliet=()=>{
       function BacktoDash(){
             navigate(`/admin/handle/clients`);
       }
+
+      const deallocateProject=async(p)=>{
+        if(!window.confirm("Do you really want to deallocate Project?")){
+          return;
+        }
+        p.clientId = null;
+
+        await fetch(`https://localhost:44327/api/Project/update/${p.id}`,{
+        method:'PUT',
+        headers:{
+            Authorization:`Bearer ${user.token}`,
+            "Accept":'application/json',
+            "Content-Type":'application/json'
+        },
+        body: JSON.stringify(p)
+     })
+     .then(res=>res.json())
+     .then(res=>{
+        loadProjects();
+        alert("Successfully deallocated");
+
+     })
+    }
+      
+
       return (
         <section className="vh-100" >
           <MDBContainer className="py-5 h-100">
@@ -126,7 +151,8 @@ const ViewCliet=()=>{
                                       <p className="fw-bold mb-1">{e.name}</p>
                                     </div>
                                   </div>
-                                  <button className="btn  btn-rounded btn-sm" onClick={()=>{navigate(`/admin/client/project/${e.id}`)}}>View</button>
+                                  <button className="btn  btn-rounded btn-sm mr-2" onClick={()=>{navigate(`/admin/client/project/${e.id}`)}}>View</button>
+                                  <button className="btn  btn-rounded text-danger btn-sm" onClick={()=>{deallocateProject(e)}}>Deallocate</button>
                                 </li>
                               </ul>
                           )

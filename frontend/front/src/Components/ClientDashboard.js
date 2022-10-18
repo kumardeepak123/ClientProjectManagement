@@ -136,7 +136,7 @@ const ClientDashboard=()=>{
                         }
                         <button className='btn btn-md mb-2 mt-2' onClick={()=>{navigate(`/client/edit/${id}`)}}>Edit Profile</button>
                         <br/>
-                        <MDBBtn className="mb-4 px-6" color='dark' size='md'  onClick={BacktoDash} >Back</MDBBtn>
+                        
                       </MDBCardBody>
                     </MDBCol>
                   </MDBRow>

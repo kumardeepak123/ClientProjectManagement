@@ -225,7 +225,7 @@ const ClientEdit=()=>{
                   <hr className="mx-n3" />
     
                   <button className='btn btn-lg btn-primary mr-3'  onClick={EditClientHandle}>Edit</button>
-                  <button className='btn btn-lg btn-secondary'  onClick={()=>{navigate(`/client/profile`)}}>Cancel</button>
+                  <button className='btn btn-lg btn-secondary'  onClick={()=>{navigate(`/client/dashboard/${client.id}`)}}>Cancel</button>
                   
                 </MDBCardBody>
               </MDBCard>
