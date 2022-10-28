@@ -1,4 +1,5 @@
 ﻿using CPMS.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,6 @@ namespace CPMS.Repository
         Task<List<Project>> GetProjectsUnderClient(int id);
         Task<List<Project>> GetProjectsWithNoClient();
 
-        Task<List<Demo>> ProjectName_WithClientName(int id);
+       /* Task<Demo> ProjectName_WithClientName(int id);*/
     }  
 }

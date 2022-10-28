@@ -1,5 +1,6 @@
 ﻿using CPMS.DBConnect;
 using CPMS.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -105,18 +106,18 @@ namespace CPMS.Repository
             return true;
         }
 
-        public async Task<List<Demo>> ProjectName_WithClientName(int id)
-        {   
-        
-            var res =  await cPMDbContext.Projects.Where(p => p.Id == id).Select(p => new Demo
+       /* public async Task<Demo> ProjectName_WithClientName(int id)
+        {
+
+            var res = await cPMDbContext.Projects.Where(p => p.Id == id).Select(p =>  new Demo
             {
                 ProjectName = p.Name,
-                Client= p._Client
-                
-            }).ToListAsync();
+                Client = p._Client
+
+            }).FirstOrDefaultAsync();
 
             return res;
-        }
+        }*/
 
       
     }

@@ -42,12 +42,12 @@ namespace CPMS.Models
         public int? ClientId { get; set; }
     }
 
-    public class Demo
+ /*   public class Demo
     {
         
         public string ProjectName { get; set; }
         public Client Client { get; set; }
 
 
-    }
+    }*/
 }

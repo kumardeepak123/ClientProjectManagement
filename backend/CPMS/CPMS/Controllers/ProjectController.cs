@@ -139,12 +139,12 @@ namespace CPMS.Controllers
             return Ok(new { message = "All Client Ids updated" });
         }
 
-        [HttpGet("demo")]
+      /*  [HttpGet("demo")]
         public async Task<IActionResult> ProjectNameWithClientName(int id)
         {
             var res = await _IProjectRepo.ProjectName_WithClientName(id);
             return Ok(res);
-        }
+        }*/
 
     }
 }
