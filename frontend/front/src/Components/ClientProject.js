@@ -70,7 +70,7 @@ const {id}= useParams();
                     <MDBRow className="pt-1">
                       <MDBCol size="6" className="mb-3">
                         <MDBTypography tag="h6">Budget</MDBTypography>
-                        <MDBCardText className="text-muted">{project.budget}</MDBCardText>
+                        <MDBCardText className="text-muted">{project.budget}Cr</MDBCardText>
                       </MDBCol>
                       <MDBCol size="6" className="mb-3">
                         <MDBTypography tag="h6">Technology</MDBTypography>
