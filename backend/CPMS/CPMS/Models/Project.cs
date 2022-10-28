@@ -44,10 +44,9 @@ namespace CPMS.Models
 
     public class Demo
     {
-        public int ProjectId { get; set; }
+        
         public string ProjectName { get; set; }
-        public int ClientId { get; set; }
-        public string clientName { get; set; }
+        public Client Client { get; set; }
 
 
     }

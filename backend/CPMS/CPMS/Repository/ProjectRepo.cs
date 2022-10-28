@@ -111,9 +111,8 @@ namespace CPMS.Repository
             var res =  await cPMDbContext.Projects.Where(p => p.Id == id).Select(p => new Demo
             {
                 ProjectName = p.Name,
-                clientName = p._Client.Name,
-                ProjectId = p.Id,
-                ClientId = p._Client.Id
+                Client= p._Client
+                
             }).ToListAsync();
 
             return res;
