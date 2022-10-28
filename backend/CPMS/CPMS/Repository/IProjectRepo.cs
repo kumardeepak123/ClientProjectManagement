@@ -15,5 +15,7 @@ namespace CPMS.Repository
         Task<bool> DeleteProject(int id);
         Task<List<Project>> GetProjectsUnderClient(int id);
         Task<List<Project>> GetProjectsWithNoClient();
-    }
+
+        Task<List<Demo>> ProjectName_WithClientName(int id);
+    }  
 }

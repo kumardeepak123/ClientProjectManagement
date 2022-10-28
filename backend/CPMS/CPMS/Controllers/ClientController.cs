@@ -36,7 +36,7 @@ namespace CPMS.Controllers
 
         [HttpPost("create")]
         [Authorize(Roles ="Admin")]
-        public async Task<IActionResult> CreateClient([FromForm] Client client)
+        public async Task<IActionResult> CreateClient([FromForm] Client client) 
         {
             string FileExtension = Path.GetExtension(client.AgreementPaperFile.FileName);
             if(FileExtension != ".pdf")
