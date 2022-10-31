@@ -4,7 +4,10 @@ const HandleClients=()=>{
      const[clients, setClients]=  useState([]);
      const user =  JSON.parse(localStorage.getItem('user-info'));
      const[isClientDeleted,setIsClientDeleted]=useState(false);
-    const navigate = useNavigate();
+     const[searchBy, setSearchBy]= useState("");
+     const[sortBy, setSortBy]= useState("");
+
+     const navigate = useNavigate();
       const loadData=()=>{
         fetch(`https://localhost:44327/api/Client/all`,{
             headers:{
@@ -49,9 +52,48 @@ const HandleClients=()=>{
             })
         })
       }
+
+      const onChangeHandler=name=>(event)=>{
+          if(name === "searchBy"){
+            setSearchBy(event.target.value);
+            return;
+          }
+          if(name === "sortBy"){
+            if(event.target.value === "sort"){
+              setSortBy("");
+              return;
+            }
+            setSortBy(event.target.value);
+          }
+      }
+
+      const searchEmployee=()=>{
+        fetch(`https://localhost:44327/api/Client/all?sortBy=${sortBy}&&orderBy=""&&searchByName=${searchBy}`,{
+            headers:{
+                "Authorization" : `Bearer ${user.token}`
+            }
+        })
+        .then(res=> res.json())
+        .then(res=>{          
+            setClients(res);
+            
+            setIsClientDeleted(false);
+        })
+      }
     return(
         <div className="container mt-5 "> 
-        <button className="btn mb-2" onClick={()=>{navigate(`/admin/create/client`)}}>Add Client</button>
+        <nav class="navbar navbar-light bg-light">
+        <select id="leavetype" onChange={onChangeHandler("sortBy")}>
+        <option  value="sort">sort</option>
+        <option  value="name">name</option>
+        <option  value="email">email</option>
+        </select>
+          <div style={{display:'flex'}}>
+            <input class="form-control mr-sm-2" type="search Client" onChange={onChangeHandler("searchBy")} placeholder="Search" aria-label="Search"/>
+            <button class="btn btn-outline-success my-2 my-sm-0" onClick={searchEmployee} >Search</button>
+          </div>
+        <button className="btn btn-success" onClick={()=>{navigate(`/admin/create/client`)}}>Add Client</button>
+        </nav>
         <table class="table table-hover  table-striped  ">
             <thead>
             <tr>

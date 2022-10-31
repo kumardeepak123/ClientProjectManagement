@@ -11,7 +11,7 @@ namespace CPMS.Repository
     {
 
         Task<Client> getClientById(int id);
-        Task<List<Client>> getAllClients();
+        Task<List<Client>> getAllClients(string sortBy, string orderBy, string searchByName);
         Task<bool> AddClient(Client client);
         Task<bool> UpdateClient(int id, Client client);
         Task<Client> DeleteClient(int id);

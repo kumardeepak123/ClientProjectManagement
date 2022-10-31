@@ -58,9 +58,50 @@ namespace CPMS.Repository
             return client;
         }
 
-        public async Task<List<Client>> getAllClients()
+        public async Task<List<Client>> getAllClients(string sortBy, string orderBy, string searchByName)
         {
-           return await cPMDbContext.Clients.ToListAsync();
+           var _Clients =  await cPMDbContext.Clients.ToListAsync();
+           if(!string.IsNullOrEmpty(sortBy))
+            {
+                 switch(sortBy)
+                {
+                    case "name":
+                        {
+                            
+                            _Clients = _Clients.OrderBy(c => c.Name).ToList();
+                            
+                            if (orderBy == "desc")
+                            {
+                                _Clients = _Clients.OrderByDescending(c => c.Name).ToList();
+                            }
+
+                            break;
+                        }
+                    case "email":
+                        {
+                            
+                                _Clients = _Clients.OrderBy(c => c.Email).ToList();
+                            
+                            if (orderBy == "desc")
+                            {
+                                _Clients = _Clients.OrderByDescending(c => c.Email).ToList();
+                            }
+                            break;
+                        }
+                    default:
+                        break;
+
+                }
+            }
+
+            if (!string.IsNullOrEmpty(searchByName))
+            {
+                searchByName = searchByName.ToLower();
+                _Clients = _Clients.Where(c => c.Name.ToLower().Contains(searchByName)).OrderBy(c => c.Name).ToList();
+            }
+
+            return _Clients;
+
         }
 
         public async Task<Client> getClientById(int id)

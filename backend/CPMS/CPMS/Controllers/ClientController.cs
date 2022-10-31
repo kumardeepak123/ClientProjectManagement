@@ -73,9 +73,9 @@ namespace CPMS.Controllers
 
         [HttpGet("all")]
         [Authorize(Roles = "Admin")]
-        public  async Task<ActionResult<List<Client>>> GetAllClients()
+        public  async Task<ActionResult<List<Client>>> GetAllClients(string sortBy, string orderBy, string searchByName)
         {
-            var clients = await _IClientRepo.getAllClients();
+            var clients = await _IClientRepo.getAllClients(sortBy, orderBy, searchByName);
 
             var res = clients.Where(x=> x.Role == "Client").Select(client => new 
             {   Id = client.Id,
