@@ -106,8 +106,15 @@ namespace CPMS.Repository
 
         public async Task<Client> getClientById(int id)
         {
-            var client = await cPMDbContext.Clients.Where(x => x.Id == id)
-                               .FirstOrDefaultAsync();
+            Client client = null; 
+            try
+            {
+                client = await cPMDbContext.Clients.Where(x => x.Id == id)
+                              .FirstOrDefaultAsync();
+            }catch(Exception)
+            {
+                return null;
+            }
             return  client;   
         }
 
