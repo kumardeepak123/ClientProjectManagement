@@ -1,29 +1,51 @@
 import React, { useState, useEffect} from "react";
 import {useNavigate} from 'react-router-dom'
+import ReactPaginate from 'react-paginate';
+
+let items= [];
+
 const HandleClients=()=>{
      const[clients, setClients]=  useState([]);
      const user =  JSON.parse(localStorage.getItem('user-info'));
      const[isClientDeleted,setIsClientDeleted]=useState(false);
      const[searchBy, setSearchBy]= useState("");
      const[sortBy, setSortBy]= useState("");
+    //  Pagination Logic
+    const [pageCount, setPageCount] = useState(0);
+    const [itemOffset, setItemOffset] = useState(0);
+    const[itemsPerPage,setItemsPerPage]= useState(5);
 
      const navigate = useNavigate();
-      const loadData=()=>{
-        fetch(`https://localhost:44327/api/Client/all`,{
-            headers:{
-                "Authorization" : `Bearer ${user.token}`
-            }
-        })
-        .then(res=> res.json())
-        .then(res=>{
-            setClients(res);
-            setIsClientDeleted(false);
-        })
-      }
+      // const loadData=()=>{
+      //   fetch(`https://localhost:44327/api/Client/all`,{
+      //       headers:{
+      //           "Authorization" : `Bearer ${user.token}`
+      //       }
+      //   })
+      //   .then(res=> res.json())
+      //   .then(res=>{
+      //     const endOffset = itemOffset + itemsPerPage;
+      //     console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+      //     setClients(res.slice(itemOffset, endOffset));
+      //     items= res;
+      //     setPageCount(Math.ceil(res.length / itemsPerPage));
+      //       // setClients(res);
+      //       setIsClientDeleted(false);
+      //   })
+      // }
 
      useEffect(()=>{
-        loadData();
-     },[])
+        //loadData();
+        searchEmployee();
+     },[itemOffset, itemsPerPage])
+
+     const handlePageClick = (event) => {
+      const newOffset = (event.selected * itemsPerPage) % items.length;
+      console.log(
+        `User requested page number ${event.selected}, which is offset ${newOffset}`
+      );
+      setItemOffset(newOffset);
+    };
 
      const deleteClientHandle=(clientID,clientName)=>{
         if(!window.confirm("Do you really want to delete?")){
@@ -48,7 +70,8 @@ const HandleClients=()=>{
             .then(r=>{
               alert(clientName+" deleted successfully");
               setIsClientDeleted(true);
-              loadData();
+              // loadData();
+              searchEmployee();
             })
         })
       }
@@ -61,9 +84,11 @@ const HandleClients=()=>{
           if(name === "sortBy"){
             if(event.target.value === "sort"){
               setSortBy("");
+              
               return;
             }
             setSortBy(event.target.value);
+            
           }
       }
 
@@ -75,8 +100,12 @@ const HandleClients=()=>{
         })
         .then(res=> res.json())
         .then(res=>{          
-            setClients(res);
-            
+          const endOffset = itemOffset + itemsPerPage;
+          console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+          setClients(res.slice(itemOffset, endOffset));
+          items= res;
+          setPageCount(Math.ceil(res.length / itemsPerPage));
+            // setClients(res);
             setIsClientDeleted(false);
         })
       }
@@ -117,7 +146,28 @@ const HandleClients=()=>{
                 </tr>
                 )} 
             </tbody>
-        </table>
+        </table>     
+        <ReactPaginate
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={3}
+        marginPagesDisplayed={2}
+        pageCount={pageCount}
+        previousLabel="< previous"
+        pageClassName="page-item"
+        pageLinkClassName="page-link"
+        previousClassName="page-item"
+        previousLinkClassName="page-link"
+        nextClassName="page-item"
+        nextLinkClassName="page-link"
+        breakLabel="..."
+        breakClassName="page-item"
+        breakLinkClassName="page-link"
+        containerClassName="pagination"
+        activeClassName="active"
+        renderOnZeroPageCount={null}
+      />
+
       </div>
   )
 

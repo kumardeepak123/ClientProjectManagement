@@ -1,8 +1,17 @@
 import React, {useState, useEffect}from 'react'
 import {useNavigate} from 'react-router-dom'
+import ReactPaginate from 'react-paginate';
+
+var items =[];
+
 const AllProjects=()=>{
 
    const[projects,setProjects]= useState([]);
+   //pagination
+   const [pageCount, setPageCount] = useState(0);
+   const [itemOffset, setItemOffset] = useState(0);
+   const[itemsPerPage,setItemsPerPage]= useState(6);
+
    const user =  JSON.parse(localStorage.getItem('user-info'));
 
    const navigate = useNavigate();
@@ -16,7 +25,12 @@ const AllProjects=()=>{
     })
     .then(res=> res.json())
     .then(res=>{
-        setProjects(res);
+        const endOffset = itemOffset + itemsPerPage;
+    console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+    setProjects(res.slice(itemOffset, endOffset));
+    items = res;
+    setPageCount(Math.ceil(items.length / itemsPerPage));
+        
     })
    }
 
@@ -41,7 +55,16 @@ const AllProjects=()=>{
    
    useEffect(()=>{
     loadData();
-   },[])
+   },[itemOffset, itemsPerPage])
+
+   const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % items.length;
+    console.log(
+      `User requested page number ${event.selected}, which is offset ${newOffset}`
+    );
+    setItemOffset(newOffset);
+  };
+
     return(
         <div className='container'>
             <button className='btn btn-lg btn-primary mt-3 mb-3' onClick={()=>{navigate(`/admin/create/project`)}}>Add Project</button>
@@ -85,6 +108,26 @@ const AllProjects=()=>{
               
             ))}
             </div>
+            <ReactPaginate
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={3}
+        marginPagesDisplayed={2}
+        pageCount={pageCount}
+        previousLabel="< previous"
+        pageClassName="page-item"
+        pageLinkClassName="page-link"
+        previousClassName="page-item"
+        previousLinkClassName="page-link"
+        nextClassName="page-item"
+        nextLinkClassName="page-link"
+        breakLabel="..."
+        breakClassName="page-item"
+        breakLinkClassName="page-link"
+        containerClassName="pagination"
+        activeClassName="active"
+        renderOnZeroPageCount={null}
+      />
         </div>
     )
 }
